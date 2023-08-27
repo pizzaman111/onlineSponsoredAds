@@ -29,7 +29,7 @@ public class CampaignService {
     }
 
     public CampaignDto createCampaign(String name, Instant startDate, List<Product> products, double bid) {
-        Instant beginOfDay = startDate.truncatedTo(ChronoUnit.DAYS);
+        Instant beginOfDay = startDate.truncatedTo(ChronoUnit.DAYS); // to avoid problems of different timezones the start-date is truncated to begining of day
         try {
             Campaign campaignDb = repository.save(new Campaign(name, beginOfDay, beginOfDay.plus(campaignActivePeriod, ChronoUnit.DAYS), bid, products));
             return new CampaignDto(campaignDb);

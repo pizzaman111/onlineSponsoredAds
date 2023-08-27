@@ -32,6 +32,7 @@ public class SponsoredAdsRestController {
         this.campaignService = campaignService;
     }
 
+    @Operation(summary = "returns list of all campaigns")
     @GetMapping("campaigns")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(campaignService.getAll());
