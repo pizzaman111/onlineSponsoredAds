@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "SponsoredAdsRestController", description = "This is the SponsoredAdsRestController")
 @Slf4j
 @RestController
 @RequestMapping("ads/")
@@ -36,6 +37,7 @@ public class SponsoredAdsRestController {
         return ResponseEntity.ok(campaignService.getAll());
     }
 
+    @Operation(summary = "creates new campain with the specified params")
     @PostMapping("campaign")
     public ResponseEntity<?> createCampaign(@RequestBody @Valid CampaignCreateRequest campaignCreateRequest, BindingResult bindingResult) {
         List<String> validationErs = checkAndFormatValidationMsg(bindingResult);
@@ -56,6 +58,7 @@ public class SponsoredAdsRestController {
 
     }
 
+    @Operation(summary = "serves campaign with the specified category")
     @GetMapping("serveAd")
     public ResponseEntity<?> serveAd(@RequestParam String category) {
         log.info("serving ad for category {}", category);
