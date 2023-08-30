@@ -21,6 +21,8 @@ public class CampaignService {
 
     @Value("${campaignActivePeriod:10}")
     private int campaignActivePeriod;
+    private static final Comparator<Campaign> CAMPAIGN_COMPARATOR = Comparator
+            .comparing(Campaign::getBid).reversed();
 
     private final CampaignRepository repository;
 
@@ -29,7 +31,7 @@ public class CampaignService {
     }
 
     public CampaignDto createCampaign(String name, Instant startDate, List<Product> products, double bid) {
-        Instant beginOfDay = startDate.truncatedTo(ChronoUnit.DAYS); // to avoid problems of different timezones the start-date is truncated to begining of day
+        Instant beginOfDay = startDate.truncatedTo(ChronoUnit.DAYS);
         try {
             Campaign campaignDb = repository.save(new Campaign(name, beginOfDay, beginOfDay.plus(campaignActivePeriod, ChronoUnit.DAYS), bid, products));
             return new CampaignDto(campaignDb);
@@ -37,6 +39,12 @@ public class CampaignService {
             log.error("error while saving campaign {} to db", name, e);
             throw e;
         }
+    }
+
+    public Campaign getWithHighestBid(Instant time) {
+        List<Campaign> campaigns = repository.findByOrderByBidDesc(time);
+        campaigns.sort(CAMPAIGN_COMPARATOR);
+        return campaigns.stream().findFirst().get();
     }
 
     public List<CampaignDto> getAll() {

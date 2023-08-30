@@ -108,18 +108,20 @@ class OnlineSponsoredAdsApplicationTests {
         assertEquals("silverware", product.getTitle());
     }
 
+    @Transactional
     @Test
     void testServeAdCategoryNotInActiveCampaign() {
         ResponseEntity<?> response = controller.serveAd("decorative");
         ProductDto product = (ProductDto) response.getBody();
-        assertEquals("diamond ring", product.getTitle());
+        assertEquals("iPhone", product.getTitle());
     }
 
+    @Transactional
     @Test
     void testServeAdCategoryNotExist() {
         ResponseEntity<?> response = controller.serveAd("new categ");
         ProductDto product = (ProductDto) response.getBody();
-        assertEquals("diamond ring", product.getTitle());
+        assertEquals("iPhone", product.getTitle());
     }
 
 }

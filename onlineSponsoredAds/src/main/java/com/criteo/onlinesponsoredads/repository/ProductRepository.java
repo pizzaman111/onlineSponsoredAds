@@ -19,6 +19,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "ORDER BY c.bid DESC ")
     List<Product> findProductsWithHighestBidInActiveCampaign(String category, Instant currentDate);
 
-    Product findFirstByOrderByPriceDesc();
-
 }

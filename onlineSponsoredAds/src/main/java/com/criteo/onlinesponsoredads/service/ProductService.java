@@ -24,6 +24,7 @@ public class ProductService {
     }
 
     public Product findProductWithHighestBid(String category, Instant currDate){
-        return repository.findProductsWithHighestBidInActiveCampaign(category, currDate).stream().findFirst().orElseGet(repository::findFirstByOrderByPriceDesc);
+        List<Product> prodList = repository.findProductsWithHighestBidInActiveCampaign(category, currDate);
+        return prodList.isEmpty() ? null : prodList.stream().findFirst().get();
     }
 }
