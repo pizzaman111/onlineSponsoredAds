@@ -50,14 +50,17 @@ class OnlineSponsoredAdsApplicationTests {
         when(bindingResult.getFieldErrors()).thenReturn(Collections.emptyList());
         Instant now  = Instant.now();
         Instant startDate = now.minus(campaignActivePeriod-5, ChronoUnit.DAYS);
-        CampaignCreateRequest createRequest1 = new CampaignCreateRequest("campaign1", startDate, List.of("aaaa", "cccc", "ffff"), 50.0);
+        CampaignCreateRequest createRequest1 = new CampaignCreateRequest("campaign1", startDate, List.of("bbbb", "cccc", "eeee"), 60.0);
         startDate = now.minus(campaignActivePeriod-3, ChronoUnit.DAYS);
-        CampaignCreateRequest createRequest2 = new CampaignCreateRequest("campaign2", startDate, List.of("dddd", "eeee", "hhhh"), 80.0);
+        CampaignCreateRequest createRequest2 = new CampaignCreateRequest("campaign2", startDate, List.of("dddd", "ffff", "hhhh"), 40.0);
+        startDate = now.minus(campaignActivePeriod-4, ChronoUnit.DAYS);
+        CampaignCreateRequest createRequest3 = new CampaignCreateRequest("campaign3", startDate, List.of("aaaa", "ffff"), 90.0);
         startDate = now.minus(campaignActivePeriod+1, ChronoUnit.DAYS);
-        CampaignCreateRequest createRequest3 = new CampaignCreateRequest("campaign3", startDate, List.of("bbbb", "gggg", "rrrr"), 90.0);
+        CampaignCreateRequest createRequest4 = new CampaignCreateRequest("campaign4", startDate, List.of("gggg", "rrrr"), 80.0);
         controller.createCampaign(createRequest1, bindingResult);
         controller.createCampaign(createRequest2, bindingResult);
         controller.createCampaign(createRequest3, bindingResult);
+        controller.createCampaign(createRequest4, bindingResult);
     }
 
     @AfterEach
@@ -70,29 +73,39 @@ class OnlineSponsoredAdsApplicationTests {
     void testCreateCampaign() {
         List<CampaignDto> campaigns = campaignService.getAll();
         Map<String, CampaignDto> campaignsMap = campaigns.stream().collect(Collectors.toMap(CampaignDto::getName, d -> d));
-        assertEquals(3, campaignsMap.size());
+        assertEquals(4, campaignsMap.size());
         CampaignDto campaign1 = campaignsMap.get("campaign1");
-        assertEquals(50.0, campaign1.getBid());
+        assertEquals(60.0, campaign1.getBid());
         assertEquals(3, campaign1.getProducts().size());
-        assertEquals(List.of("iPhone","chair","shovel"), campaign1.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
+        assertEquals(List.of("galaxy tablet","chair","wheelbarrow"), campaign1.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
         CampaignDto campaign2 = campaignsMap.get("campaign2");
-        assertEquals(80.0, campaign2.getBid());
+        assertEquals(40.0, campaign2.getBid());
         assertEquals(3, campaign2.getProducts().size());
-        assertEquals(List.of("table","wheelbarrow","silverware"), campaign2.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
+        assertEquals(List.of("table","shovel","silverware"), campaign2.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
         CampaignDto campaign3 = campaignsMap.get("campaign3");
         assertEquals(90.0, campaign3.getBid());
-        assertEquals(3, campaign3.getProducts().size());
-        assertEquals(List.of("galaxy tablet","frying pan","wall clock"), campaign3.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
+        assertEquals(2, campaign3.getProducts().size());
+        assertEquals(List.of("iPhone", "shovel"), campaign3.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
+        CampaignDto campaign4 = campaignsMap.get("campaign4");
+        assertEquals(80.0, campaign4.getBid());
+        assertEquals(2, campaign4.getProducts().size());
+        assertEquals(List.of("frying pan", "wall clock"), campaign4.getProducts().stream().map(ProductDto::getTitle).collect(Collectors.toList()));
     }
 
     @Test
     void testServeAd() {
-        ResponseEntity<?> response = controller.serveAd("furniture");
+        ResponseEntity<?> response = controller.serveAd("electronics");
         ProductDto product = (ProductDto) response.getBody();
-        assertEquals("table", product.getTitle());
+        assertEquals("iPhone", product.getTitle());
+        response = controller.serveAd("furniture");
+        product = (ProductDto) response.getBody();
+        assertEquals("chair", product.getTitle());
         response = controller.serveAd("gardening");
         product = (ProductDto) response.getBody();
-        assertEquals("wheelbarrow", product.getTitle());
+        assertEquals("shovel", product.getTitle());
+        response = controller.serveAd("cooking");
+        product = (ProductDto) response.getBody();
+        assertEquals("silverware", product.getTitle());
     }
 
     @Test

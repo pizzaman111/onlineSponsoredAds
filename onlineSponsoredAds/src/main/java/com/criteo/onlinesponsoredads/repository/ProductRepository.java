@@ -16,7 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE :currentDate <= c.endDate " +
             "AND :currentDate >= c.startDate " +
             "AND p.category = :category " +
-            "ORDER BY p.price DESC ")
+            "ORDER BY c.bid DESC ")
     List<Product> findProductsWithHighestBidInActiveCampaign(String category, Instant currentDate);
 
     Product findFirstByOrderByPriceDesc();
