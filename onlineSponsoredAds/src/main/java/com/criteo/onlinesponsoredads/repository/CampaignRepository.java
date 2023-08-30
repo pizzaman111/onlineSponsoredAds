@@ -5,9 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
 
-    @Query("SELECT c FROM Campaign c " +
-            "WHERE :currentDate <= c.endDate " +
-            "AND :currentDate >= c.startDate " +
-            "ORDER BY c.bid DESC ")
-    List<Campaign> findByOrderByBidDesc(Instant currentDate);
+    Campaign findFirstByStartDateBeforeAndEndDateAfterOrderByBidDesc(Instant currentDate, Instant currentDate2);
 }

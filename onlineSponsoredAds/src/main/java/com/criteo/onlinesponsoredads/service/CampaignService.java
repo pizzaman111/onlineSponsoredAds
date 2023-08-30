@@ -21,8 +21,6 @@ public class CampaignService {
 
     @Value("${campaignActivePeriod:10}")
     private int campaignActivePeriod;
-    private static final Comparator<Campaign> CAMPAIGN_COMPARATOR = Comparator
-            .comparing(Campaign::getBid).reversed();
 
     private final CampaignRepository repository;
 
@@ -42,9 +40,7 @@ public class CampaignService {
     }
 
     public Campaign getWithHighestBid(Instant time) {
-        List<Campaign> campaigns = repository.findByOrderByBidDesc(time);
-        campaigns.sort(CAMPAIGN_COMPARATOR);
-        return campaigns.stream().findFirst().get();
+        return repository.findFirstByStartDateBeforeAndEndDateAfterOrderByBidDesc(time, time);
     }
 
     public List<CampaignDto> getAll() {
