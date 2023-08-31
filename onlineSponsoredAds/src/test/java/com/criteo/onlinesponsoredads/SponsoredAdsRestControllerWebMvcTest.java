@@ -64,7 +64,7 @@ public class SponsoredAdsRestControllerWebMvcTest {
 
     @Test
     public void testCreateCampaignOk() throws Exception {
-        Campaign campaign = new Campaign("camp-name", Instant.now(), Instant.now(), 50d, Collections.emptyList());
+        Campaign campaign = new Campaign("camp-name", Instant.now(), 50d, Collections.emptyList());
         List<Product> products = List.of(new Product(), new Product(), new Product());
         when(productService.getAllProductsBySerialNumbers(anyList())).thenReturn(products);
         when(campaignService.createCampaign(anyString(), any(Instant.class), anyList(), anyLong())).thenReturn(new CampaignDto(campaign));

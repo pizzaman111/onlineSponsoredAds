@@ -25,19 +25,15 @@ public class Campaign {
     private Instant startDate;
 
     @Column(nullable = false)
-    private Instant endDate;
-
-    @Column(nullable = false)
     private double bid;
 
     @ManyToMany
     @JoinTable(name = "campaign_product", joinColumns = @JoinColumn(name = "campaign_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products = new ArrayList<>();
 
-    public Campaign(String name, Instant startDate, Instant endDate, double bid, List<Product> products) {
+    public Campaign(String name, Instant startDate, double bid, List<Product> products) {
         this.name = name;
         this.startDate = startDate;
-        this.endDate = endDate;
         this.bid = bid;
         this.products = products;
     }
@@ -60,14 +56,6 @@ public class Campaign {
 
     public void setStartDate(Instant startDate) {
         this.startDate = startDate;
-    }
-
-    public Instant getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Instant endDate) {
-        this.endDate = endDate;
     }
 
     public double getBid() {

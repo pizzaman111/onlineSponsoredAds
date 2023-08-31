@@ -31,7 +31,7 @@ public class CampaignService {
     public CampaignDto createCampaign(String name, Instant startDate, List<Product> products, double bid) {
         Instant beginOfDay = startDate.truncatedTo(ChronoUnit.DAYS);
         try {
-            Campaign campaignDb = repository.save(new Campaign(name, beginOfDay, beginOfDay.plus(campaignActivePeriod, ChronoUnit.DAYS), bid, products));
+            Campaign campaignDb = repository.save(new Campaign(name, beginOfDay, bid, products));
             return new CampaignDto(campaignDb);
         } catch (Exception e) {
             log.error("error while saving campaign {} to db", name, e);
@@ -40,7 +40,7 @@ public class CampaignService {
     }
 
     public Campaign getWithHighestBid(Instant time) {
-        return repository.findFirstByStartDateBeforeAndEndDateAfterOrderByBidDesc(time, time);
+        return repository.findActiveCampaignsOrderByBidDesc(time).stream().findFirst().get();
     }
 
     public List<CampaignDto> getAll() {

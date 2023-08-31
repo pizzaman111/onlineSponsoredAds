@@ -19,14 +19,12 @@ public class CampaignDto {
 
     private String name;
     private Instant startDate;
-    private Instant endDate;
     private double bid;
     private List<ProductDto> products;
 
     public CampaignDto(Campaign campaign) {
         this.name = campaign.getName();
         this.startDate = campaign.getStartDate();
-        this.endDate = campaign.getEndDate();
         this.bid = campaign.getBid();
         this.products = campaign.getProducts().stream().map(ProductDto::new).collect(Collectors.toList());
     }
