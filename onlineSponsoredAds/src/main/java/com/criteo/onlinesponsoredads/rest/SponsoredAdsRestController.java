@@ -26,8 +26,6 @@ public class SponsoredAdsRestController {
 
     private final ProductService productService;
     private final CampaignService campaignService;
-    private static final Comparator<Product> PRODUCT_COMPARATOR = Comparator
-            .comparing(Product::getPrice).reversed();
 
     public SponsoredAdsRestController(ProductService productService, CampaignService campaignService) {
         this.productService = productService;
@@ -67,13 +65,9 @@ public class SponsoredAdsRestController {
         log.info("serving ad for category {}", category);
         try {
             Instant now = Instant.now();
-            Product productWithHighestBid = productService.findProductWithHighestBid(category, now);
-            if(productWithHighestBid == null) {
-                List<Product> products = campaignService.getWithHighestBid(now).getProducts();
-                products.sort(PRODUCT_COMPARATOR);
-                productWithHighestBid = products.stream().findFirst().get(); // assuming at least 1 campaign exist in db
-            }
-            return new ResponseEntity<>(new ProductDto(productWithHighestBid), HttpStatus.OK);
+            Product productWithHighestBid = productService.getProductWithHighestBidByCategory(category, now);
+            productWithHighestBid = productWithHighestBid == null ? campaignService.getProductOfCampaignWithHighestBid(now) : productWithHighestBid;
+            return productWithHighestBid !=null ? new ResponseEntity<>(new ProductDto(productWithHighestBid), HttpStatus.OK) : ResponseEntity.notFound().build();
         }
         catch (Exception e){
             log.error("error occurred while serving ad for category {} ", category, e);

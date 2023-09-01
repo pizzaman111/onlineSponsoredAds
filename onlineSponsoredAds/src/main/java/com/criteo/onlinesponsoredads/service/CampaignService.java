@@ -22,6 +22,9 @@ public class CampaignService {
     @Value("${campaignActivePeriod:10}")
     private int campaignActivePeriod;
 
+    private static final Comparator<Product> PRODUCT_COMPARATOR = Comparator
+            .comparing(Product::getPrice).reversed();
+
     private final CampaignRepository repository;
 
     public CampaignService(CampaignRepository repository) {
@@ -39,8 +42,14 @@ public class CampaignService {
         }
     }
 
-    public Campaign getWithHighestBid(Instant time) {
-        return repository.findActiveCampaignsOrderByBidDesc(time).stream().findFirst().get();
+    public Product getProductOfCampaignWithHighestBid(Instant time) {
+        Optional<Campaign> first = repository.findActiveCampaignsOrderByBidDesc(time, PageRequest.of(0, 1)).stream().findFirst();
+        if(first.isPresent()) {
+            List<Product> products = first.get().getProducts();
+            products.sort(PRODUCT_COMPARATOR);
+            return products.stream().findFirst().orElse(null);
+        }
+        return null;
     }
 
     public List<CampaignDto> getAll() {

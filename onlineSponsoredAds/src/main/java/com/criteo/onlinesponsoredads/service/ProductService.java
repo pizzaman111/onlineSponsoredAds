@@ -23,8 +23,8 @@ public class ProductService {
         return repository.getAllBySerialNumberIn(serialNums);
     }
 
-    public Product findProductWithHighestBid(String category, Instant currDate){
-        List<Product> prodList = repository.findProductsWithHighestBidInActiveCampaign(category, currDate);
-        return prodList.isEmpty() ? null : prodList.stream().findFirst().get();
+    public Product getProductWithHighestBidByCategory(String category, Instant currDate){
+        List<Product> prodList = repository.findProductsWithHighestBidInActiveCampaign(category, currDate, PageRequest.of(0,1));
+        return prodList.stream().findFirst().orElse(null);
     }
 }

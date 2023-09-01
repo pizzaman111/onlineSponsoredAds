@@ -127,7 +127,7 @@ public class SponsoredAdsRestControllerWebMvcTest {
 
     @Test
     public void testServeAdOk() throws Exception {
-        when(productService.findProductWithHighestBid(anyString(), any(Instant.class))).thenReturn(new Product());
+        when(productService.getProductWithHighestBidByCategory(anyString(), any(Instant.class))).thenReturn(new Product());
         MockHttpServletRequestBuilder serveAd = createGetRequestWithGivenParams(SERVE_AD_ENDPOINT, Map.of("category", "category"));
         mockMvc.perform(serveAd).andDo(print()).andExpect(status().isOk());
     }
@@ -135,7 +135,7 @@ public class SponsoredAdsRestControllerWebMvcTest {
     @Test
     public void testServeAdGeneralError() throws Exception {
         RuntimeException runtimeException = new RuntimeException();
-        when(productService.findProductWithHighestBid(anyString(), any(Instant.class))).thenThrow(runtimeException);
+        when(productService.getProductWithHighestBidByCategory(anyString(), any(Instant.class))).thenThrow(runtimeException);
         MockHttpServletRequestBuilder serveAd = createGetRequestWithGivenParams(SERVE_AD_ENDPOINT, Map.of("category", "category"));
         mockMvc.perform(serveAd).andDo(print())
                 .andExpect(status().isInternalServerError())

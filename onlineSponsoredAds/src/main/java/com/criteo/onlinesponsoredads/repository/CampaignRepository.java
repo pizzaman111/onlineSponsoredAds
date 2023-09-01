@@ -9,5 +9,5 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long> {
             "WHERE :currentDate >= c.startDate " +
             "AND :currentDate <= FUNCTION('DATEADD', 'DAY', 10, c.startDate) " +
             "ORDER BY c.bid DESC ")
-    List<Campaign> findActiveCampaignsOrderByBidDesc(Instant currentDate);
+    List<Campaign> findActiveCampaignsOrderByBidDesc(Instant currentDate, Pageable pageable);
 }
